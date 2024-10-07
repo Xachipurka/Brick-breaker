@@ -5,6 +5,14 @@ import random
 from ball import Ball
 from block import Block
 
+
+def generate_level():
+    global blocks, ball
+    blocks = [Block(150 + 100 * i, 200 - 80 * j) for i in range(5) for j in range(level)]
+    ball.x = 300
+    ball.y = 400
+
+
 # Инициализация Pygame
 pygame.init()
 
@@ -16,16 +24,18 @@ pygame.display.set_caption("Простое приложение Pygame")
 # Цвета
 BLACK = (0, 0, 0)
 BLUE = (170, 0, 0)
-
+level = 4
 # Параметры квадрата
-square_size_x = 50
-square_size_y = 10
+square_size_x = 100
+square_size_y = 20
 square_x = WIDTH // 2 - square_size_x // 2
 square_y = HEIGHT - 50
-square_speed = 5
+square_speed = 7
 
-blocks = [Block(50 * i, 100) for i in range(20)]
 ball = Ball()
+font = pygame.font.Font(None, 45)
+
+generate_level()
 
 gameOver = False
 
@@ -54,6 +64,14 @@ while not gameOver:
     if ball.y >= HEIGHT:
         gameOver = True
 
+    if len(blocks) == 0:
+        level += 1
+        generate_level()
+
+    block_s = font.render(str(len(blocks)), True, (255, 255, 255))
+    level_text = font.render(f"level: {level}", True, (255, 255, 255))
+    screen.blit(block_s, (20, 300))
+    screen.blit(level_text, (0, 10))
     # Рисование квадрата
     pygame.draw.rect(screen, BLUE, (square_x, square_y, square_size_x, square_size_y))
     for i in range(len(blocks)):
